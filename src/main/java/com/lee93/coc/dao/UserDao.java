@@ -6,4 +6,5 @@ import org.apache.ibatis.annotations.Mapper;
 public interface UserDao {
     int duplicateId(String userId);
 
+    int isAdminId(String loginId);
 }
