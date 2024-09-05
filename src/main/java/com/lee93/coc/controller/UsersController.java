@@ -28,7 +28,7 @@ public class UsersController {
     public ResponseEntity<String> signup(@ModelAttribute UserRequest userRequest) {
         logger.info(" --- >>> Signup request received : {}", userRequest);
         // 비밀번호 암호화
-
+        
         // 회원정보 저장
 
         return ResponseEntity.ok(" -- Signup successful");
