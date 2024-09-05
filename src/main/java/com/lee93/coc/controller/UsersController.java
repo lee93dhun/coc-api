@@ -17,7 +17,11 @@ public class UsersController {
     private final UserService userService;
 
 
-    // 아이디 중복확인
+    /**
+     * 회원가입을 시도하는 ID의 중복 검사 및 유효성 검사
+     * @param loginId sign up 요청하는 user 의 id
+     * @return 유효성 검사 결과에 따른 응답 ENUM 값
+     */
     @PostMapping(path = "/auth/validate-loginid")
     public ResponseEntity<String> validateUser(@RequestParam String loginId) {
         logger.info(" --- >>> Validating user id : {}" , loginId);
