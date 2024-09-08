@@ -29,7 +29,7 @@ public class UsersController {
      * @return 검사 결과에 따른 응답값
      */
     // TODO 유효성 검사 실패시 message 안뜸
-    @PostMapping(path = "/auth/available -loginid")
+    @PostMapping(path = "/auth/available-loginid")
     public ResponseEntity<String> availableId( @RequestParam
             @NotBlank( message = "ID를 입력해주세요.")
             @Size(min = 4, max = 11, message = "ID는 4~11자리만 가능합니다.")
