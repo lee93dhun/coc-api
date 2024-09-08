@@ -67,7 +67,7 @@ public class UsersController {
                 .build();
         userService.signupUser(userEntity);
 
-        return ResponseEntity.ok(" -- Signup successful");
+        return ResponseEntity.ok(" -- Signup success");
     }
 
     @PostMapping(path = "/user/login")
@@ -81,7 +81,7 @@ public class UsersController {
 
         boolean success = userService.loginUser(userEntity);
         // TODO success 결과에 따라 토큰 Access token 발급
-        return ResponseEntity.ok(" -- Login successful");
+        return ResponseEntity.ok(" -- Login success");
     }
 
 
