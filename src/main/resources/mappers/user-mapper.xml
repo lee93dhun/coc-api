@@ -14,4 +14,8 @@
         INSERT INTO users (login_id, password, user_name)
         VALUES (#{loginId}, #{password}, #{userName})
     </insert>
+
+    <select id="idCheckGetPassword" parameterType="String" resultType="String">
+        SELECT password FROM users WHERE login_id = #{loginId}
+    </select>
 </mapper>

@@ -29,11 +29,34 @@ public class UserService {
         }
         return ValidationStatus.AVAILABLE.name();
     }
-
+    
     public void signupUser(UserEntity userEntity) {
         logger.info("UserService  -- signupUser() 실행");
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
         userDao.signupUser(userEntity);
+    }
+
+    public boolean loginUser(UserEntity userEntity) {
+        logger.info("UserService -- loginUser() 실행");
+        String encodedPassword ;
+        encodedPassword = userDao.idCheckGetPassword(userEntity.getLoginId());
+        if (encodedPassword == null) {
+            logger.error("해당 사용자를 찾을 수 없습니다.");
+            return false;
+            //TODO Custom Exception 처리로 변경
+        }
+        logger.info("get password = {}", encodedPassword);
+        boolean pwCheck = checkPassword(userEntity.getPassword(), encodedPassword);
+        if(!pwCheck){
+            logger.error("비밀번호 불일치");
+            //TODO Custom Exception 처리로 변경
+        }
+        return pwCheck;
+    }
+    public boolean checkPassword(String requestPw, String encodedPw){
+        logger.info(":: Password Check ::");
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        return passwordEncoder.matches(requestPw, encodedPw);
     }
 }

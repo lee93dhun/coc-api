@@ -10,4 +10,6 @@ public interface UserDao {
     int isAdminId(String loginId);
 
     void signupUser(UserEntity userEntity);
+
+    String idCheckGetPassword(String loginId);
 }

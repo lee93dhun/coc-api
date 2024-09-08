@@ -1,7 +1,8 @@
 package com.lee93.coc.controller;
 
 import com.lee93.coc.model.entity.UserEntity;
-import com.lee93.coc.model.request.UserRequestDto;
+import com.lee93.coc.model.request.LoginRequestDto;
+import com.lee93.coc.model.request.SignupRequestDto;
 import com.lee93.coc.service.UserService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -43,16 +44,16 @@ public class UsersController {
 
     /**
      * 회원가입
-     * @param userRequestDto 회원가입에 필요한 User data
+     * @param signupRequestDto 회원가입에 필요한 User data
      * @param availableSignUp 프론트에서 모든 항목에 유효성 검사를 한 결과 ( true , false )
      * @return
      */
-    @PostMapping(path = "/auth/signup")
+    @PostMapping(path = "/user/signup")
     public ResponseEntity<String> signup(
             @Valid
-            @ModelAttribute UserRequestDto userRequestDto,
+            @ModelAttribute SignupRequestDto signupRequestDto,
             @RequestParam("availableSignUp") boolean availableSignUp) {
-        logger.info(" --- >>> Signup request received : {}", userRequestDto);
+        logger.info(" --- >>> Signup request received : {}", signupRequestDto);
         // TODO 프론트엔드 - 비밀번호 확인 / 중복
 
         // TODO api url 에 직접 접근시 return 고민
@@ -60,13 +61,27 @@ public class UsersController {
             return new ResponseEntity<>("잘못된 요청", HttpStatus.BAD_REQUEST);
         }
         UserEntity userEntity = UserEntity.builder()
-                .loginId(userRequestDto.getLoginId())
-                .password(userRequestDto.getPassword())
-                .userName(userRequestDto.getUserName())
+                .loginId(signupRequestDto.getLoginId())
+                .password(signupRequestDto.getPassword())
+                .userName(signupRequestDto.getUserName())
                 .build();
         userService.signupUser(userEntity);
 
         return ResponseEntity.ok(" -- Signup successful");
+    }
+
+    @PostMapping(path = "/user/login")
+    public ResponseEntity<String> login(@ModelAttribute LoginRequestDto loginRequestDto){
+        logger.info(" --- >>> Login request received : {}", loginRequestDto);
+
+        UserEntity userEntity = UserEntity.builder()
+                .loginId(loginRequestDto.getLoginId())
+                .password(loginRequestDto.getPassword())
+                .build();
+
+        boolean success = userService.loginUser(userEntity);
+        // TODO success 결과에 따라 토큰 Access token 발급
+        return ResponseEntity.ok(" -- Login successful");
     }
 
 

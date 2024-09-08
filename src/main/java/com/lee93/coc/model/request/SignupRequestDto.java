@@ -6,11 +6,10 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedBy;
 
 @Getter
 @Setter
-public class UserRequestDto {
+public class SignupRequestDto {
     private int userId;
 
     @NotBlank( message = "ID를 입력해주세요.")
