@@ -5,9 +5,13 @@
 
 <mapper namespace="com.lee93.coc.dao.UserDao">
     <select id="duplicateId" parameterType="String" resultType="int">
-        SELECT COUNT(*) as loginId FROM users WHERE login_id = #{loginId}
+        SELECT COUNT(*) as loginIdCnt FROM users WHERE login_id = #{loginId}
     </select>
     <select id="isAdminId" parameterType="String" resultType="int">
-        SELECT COUNT(*) as loginId FROM admin WHERE admin_login_id = #{loginId}
+        SELECT COUNT(*) as loginIdCnt FROM admin WHERE admin_login_id = #{loginId}
     </select>
+    <insert id="signupUser" parameterType="userEntity">
+        INSERT INTO users (login_id, password, user_name)
+        VALUES (#{loginId}, #{password}, #{userName})
+    </insert>
 </mapper>
