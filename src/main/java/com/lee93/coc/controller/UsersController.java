@@ -24,19 +24,20 @@ public class UsersController {
 
 
     /**
-     * 회원가입을 시도하는 ID의 중복 검사 및 유효성 검사
+     * 회원가입을 시도하는 ID가 사용가능한지 검사
      * @param loginId sign up 요청하는 user 의 id
-     * @return 중복 검사 결과에 따른 응답 ENUM 값
+     * @return 검사 결과에 따른 응답값
      */
     // TODO 유효성 검사 실패시 message 안뜸
-    @PostMapping(path = "/auth/validate-loginid")
-    public ResponseEntity<String> validateUser( @RequestParam
+    @PostMapping(path = "/auth/available -loginid")
+    public ResponseEntity<String> availableId( @RequestParam
             @NotBlank( message = "ID를 입력해주세요.")
             @Size(min = 4, max = 11, message = "ID는 4~11자리만 가능합니다.")
             @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d-_]{4,11}$", message = "ID는 영문과 숫자의 조합이며, 특수문자는 '-','_'만 가능합니다.")
             String loginId ) {
-        logger.info(" --- >>> Validating user id : {}" , loginId);
-        return ResponseEntity.ok(userService.validateUserId(loginId));
+        logger.info(" --- >>> available user id : {}" , loginId);
+        String availableResult = userService.availableUserId(loginId);
+        return ResponseEntity.ok(availableResult);
         // TODO 프론트엔드 - 응답 값에 따른 처리
     }
 
@@ -67,5 +68,7 @@ public class UsersController {
 
         return ResponseEntity.ok(" -- Signup successful");
     }
+
+
 
 }

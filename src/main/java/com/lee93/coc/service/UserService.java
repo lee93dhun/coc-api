@@ -20,12 +20,7 @@ public class UserService {
      * @param loginId 회원가입을 시도하는 ID
      * @return 유효성 검사 결과에 따른 응답 ENUM 값
      */
-    public String validateUserId(String loginId) {
-//        // 영어,숫자,특수문자('-','_')만 가능 / 공백 불가 / 4~11 글자
-//        String pattern = "^[a-zA-Z0-9_-]{4,11}$";
-//        if (loginId == null || !loginId.matches(pattern)) {
-//            return ValidationStatus.INVALID_FORMAT.name();
-//        }
+    public String availableUserId(String loginId) {
         if (userDao.isAdminId(loginId) > 0) {
             return ValidationStatus.UNAVAILABLE.name();
         }

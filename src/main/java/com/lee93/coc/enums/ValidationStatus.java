@@ -4,7 +4,6 @@ import lombok.Getter;
 
 @Getter
 public enum ValidationStatus {
-    INVALID_FORMAT,
     UNAVAILABLE,
     DUPLICATE,
     AVAILABLE
