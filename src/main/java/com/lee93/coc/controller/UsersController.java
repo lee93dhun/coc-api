@@ -4,6 +4,7 @@ import com.lee93.coc.model.entity.UserEntity;
 import com.lee93.coc.model.request.LoginRequestDto;
 import com.lee93.coc.model.request.SignupRequestDto;
 import com.lee93.coc.service.UserService;
+import com.lee93.coc.srcurity.JwtTokenProvider;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -15,6 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping(path = "/api")
@@ -22,6 +26,7 @@ public class UsersController {
 
     final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final UserService userService;
+    private final JwtTokenProvider jwtTokenProvider;
 
 
     /**
@@ -71,7 +76,7 @@ public class UsersController {
     }
 
     @PostMapping(path = "/user/login")
-    public ResponseEntity<String> login(@ModelAttribute LoginRequestDto loginRequestDto){
+    public ResponseEntity<Map> login(@ModelAttribute LoginRequestDto loginRequestDto){
         logger.info(" --- >>> Login request received : {}", loginRequestDto);
 
         UserEntity userEntity = UserEntity.builder()
@@ -80,8 +85,18 @@ public class UsersController {
                 .build();
 
         boolean success = userService.loginUser(userEntity);
-        // TODO success 결과에 따라 토큰 Access token 발급
-        return ResponseEntity.ok(" -- Login success");
+        String loginId = userEntity.getLoginId();
+        if(success){
+            String token = jwtTokenProvider.generateToken(loginId);
+            Map<String, String> response = new HashMap<>();
+            response.put("token", token);
+            response.put("message","Login success");
+           return ResponseEntity.ok(response);
+           // TODO 프론트엔드 - Localstorage 에 token 저장하기
+        }else{
+            // TODO custom exception 처리로 변경
+            throw new RuntimeException("Invalid credentials");
+        }
     }
 
 
