@@ -1,4 +1,4 @@
-package com.lee93.coc.srcurity;
+package com.lee93.coc.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -13,10 +13,9 @@ import java.util.Map;
 public class JwtTokenProvider {
 
     private final String SECRET_KEY = System.getenv("JWT_SECRET_KEY");
-    private final long EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 30;
+    private final long EXPIRATION_TIME = 1000L * 60 * 60 * 24 * 30;
 
     public String generateToken(String loginId) {
-        System.out.println(loginId+" ::: Generating JWT token ::: "+SECRET_KEY);
         Map<String, Object> claims = new HashMap<>();
         return createToken(claims, loginId);
     }

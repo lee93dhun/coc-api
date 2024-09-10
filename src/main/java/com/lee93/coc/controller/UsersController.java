@@ -4,7 +4,7 @@ import com.lee93.coc.model.entity.UserEntity;
 import com.lee93.coc.model.request.LoginRequestDto;
 import com.lee93.coc.model.request.SignupRequestDto;
 import com.lee93.coc.service.UserService;
-import com.lee93.coc.srcurity.JwtTokenProvider;
+import com.lee93.coc.security.JwtTokenProvider;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
