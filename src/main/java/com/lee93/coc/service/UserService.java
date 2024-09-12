@@ -1,6 +1,7 @@
 package com.lee93.coc.service;
 
 import com.lee93.coc.dao.UserDao;
+import com.lee93.coc.enums.ResponseStatus;
 import com.lee93.coc.model.entity.UserEntity;
 import com.lee93.coc.enums.ValidationStatus;
 import lombok.AllArgsConstructor;
@@ -37,22 +38,18 @@ public class UserService {
         userDao.signupUser(userEntity);
     }
 
-    public boolean loginUser(UserEntity userEntity) {
+    public ResponseStatus loginUser(UserEntity userEntity) {
         logger.info("UserService -- loginUser() 실행");
         String encodedPassword ;
         encodedPassword = userDao.idCheckGetPassword(userEntity.getLoginId());
         if (encodedPassword == null) {
-            logger.error("해당 사용자를 찾을 수 없습니다.");
-            return false;
-            //TODO Custom Exception 처리로 변경
+            return ResponseStatus.USER_NOT_FOUND;
         }
-        logger.info("get password = {}", encodedPassword);
         boolean pwCheck = checkPassword(userEntity.getPassword(), encodedPassword);
         if(!pwCheck){
-            logger.error("비밀번호 불일치");
-            //TODO Custom Exception 처리로 변경
+            return ResponseStatus.PASSWORD_MISMATCH;
         }
-        return pwCheck;
+        return ResponseStatus.SUCCESS;
     }
     public boolean checkPassword(String requestPw, String encodedPw){
         logger.info(":: Password Check ::");

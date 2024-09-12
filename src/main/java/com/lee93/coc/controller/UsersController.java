@@ -1,5 +1,8 @@
 package com.lee93.coc.controller;
 
+import com.lee93.coc.common.CustomException;
+import com.lee93.coc.common.GlobalExceptionHandler;
+import com.lee93.coc.enums.ResponseStatus;
 import com.lee93.coc.model.entity.UserEntity;
 import com.lee93.coc.model.request.LoginRequestDto;
 import com.lee93.coc.model.request.SignupRequestDto;
@@ -76,7 +79,7 @@ public class UsersController {
     }
 
     @PostMapping(path = "/user/login")
-    public ResponseEntity<Map> login(@ModelAttribute LoginRequestDto loginRequestDto){
+    public ResponseEntity<Map> login(@RequestBody LoginRequestDto loginRequestDto){
         logger.info(" --- >>> Login request received : {}", loginRequestDto);
 
         UserEntity userEntity = UserEntity.builder()
@@ -84,18 +87,17 @@ public class UsersController {
                 .password(loginRequestDto.getPassword())
                 .build();
 
-        boolean success = userService.loginUser(userEntity);
         String loginId = userEntity.getLoginId();
-        if(success){
+        ResponseStatus result = userService.loginUser(userEntity);
+
+        if(result.equals(ResponseStatus.SUCCESS)){
             String token = jwtTokenProvider.generateToken(loginId);
             Map<String, String> response = new HashMap<>();
             response.put("token", token);
-            response.put("message","Login success");
+            response.put("message","Login "+ResponseStatus.SUCCESS.getMsg());
            return ResponseEntity.ok(response);
-           // TODO 프론트엔드 - Localstorage 에 token 저장하기
         }else{
-            // TODO custom exception 처리로 변경
-            throw new RuntimeException("Invalid credentials");
+            throw new CustomException(result);
         }
     }
 
