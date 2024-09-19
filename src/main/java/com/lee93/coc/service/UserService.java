@@ -22,6 +22,7 @@ public class UserService {
      * @return 유효성 검사 결과에 따른 응답 ENUM 값
      */
     public String availableUserId(String loginId) {
+        // TODO loginId에 admin 이 포함되면 막기
         if (userDao.isAdminId(loginId) > 0) {
             return ValidationStatus.UNAVAILABLE.name();
         }

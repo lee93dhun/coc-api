@@ -2,6 +2,7 @@ package com.lee93.coc.model.request;
 
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -10,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SignupRequestDto {
-    private int userId;
+//    private int userId;
 
     @NotBlank( message = "ID를 입력해주세요.")
     @Size(min = 4, max = 11, message = "ID는 4~11자리만 가능합니다.")
@@ -28,5 +29,8 @@ public class SignupRequestDto {
     @Size(min = 2, max = 4, message = "이름은 2~5자리만 가능합니다.")
     @Pattern(regexp = "^[A-Za-z가-힣]+$", message = "이름은 한글과 영문만 가능합니다.")
     private String userName;
+
+    @NotNull
+    private boolean availableSignup;
     
 }

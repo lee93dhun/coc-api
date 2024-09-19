@@ -38,7 +38,7 @@ public class UsersController {
      * @return 검사 결과에 따른 응답값
      */
     // TODO 유효성 검사 실패시 message 안뜸
-    @PostMapping(path = "/auth/available-loginid")
+    @GetMapping(path = "/auth/available-loginid")
     public ResponseEntity<String> availableId( @RequestParam
             @NotBlank( message = "ID를 입력해주세요.")
             @Size(min = 4, max = 11, message = "ID는 4~11자리만 가능합니다.")
@@ -47,25 +47,20 @@ public class UsersController {
         logger.info(" --- >>> available user id : {}" , loginId);
         String availableResult = userService.availableUserId(loginId);
         return ResponseEntity.ok(availableResult);
-        // TODO 프론트엔드 - 응답 값에 따른 처리
     }
 
     /**
      * 회원가입
      * @param signupRequestDto 회원가입에 필요한 User data
-     * @param availableSignUp 프론트에서 모든 항목에 유효성 검사를 한 결과 ( true , false )
      * @return
      */
     @PostMapping(path = "/user/signup")
     public ResponseEntity<String> signup(
             @Valid
-            @ModelAttribute SignupRequestDto signupRequestDto,
-            @RequestParam("availableSignUp") boolean availableSignUp) {
-        logger.info(" --- >>> Signup request received : {}", signupRequestDto);
-        // TODO 프론트엔드 - 비밀번호 확인 / 중복
-
+            @RequestBody SignupRequestDto signupRequestDto ) {
+        logger.info(" --- >>> Signup request received : {}", signupRequestDto.toString());
         // TODO api url 에 직접 접근시 return 고민
-        if(!availableSignUp) {
+        if(!signupRequestDto.isAvailableSignup()) {
             return new ResponseEntity<>("잘못된 요청", HttpStatus.BAD_REQUEST);
         }
         UserEntity userEntity = UserEntity.builder()
@@ -75,7 +70,7 @@ public class UsersController {
                 .build();
         userService.signupUser(userEntity);
 
-        return ResponseEntity.ok(" -- Signup success");
+        return ResponseEntity.ok("SUCCESS");
     }
 
     @PostMapping(path = "/user/login")
