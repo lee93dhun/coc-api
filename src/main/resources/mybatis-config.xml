@@ -2,9 +2,13 @@
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0/EN"
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
+    <settings>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
     <typeAliases>
         <typeAlias alias="userEntity" type="com.lee93.coc.model.entity.UserEntity"/>
         <typeAlias alias="postEntity" type="com.lee93.coc.model.entity.PostEntity"/>
+        <typeAlias alias="categoryEntity" type="com.lee93.coc.model.entity.CategoryEntity"/>
     </typeAliases>
 
 </configuration>
