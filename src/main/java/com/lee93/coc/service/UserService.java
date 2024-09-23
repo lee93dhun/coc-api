@@ -3,7 +3,8 @@ package com.lee93.coc.service;
 import com.lee93.coc.dao.UserDao;
 import com.lee93.coc.enums.ResponseStatus;
 import com.lee93.coc.model.entity.UserEntity;
-import com.lee93.coc.enums.ValidationStatus;
+import com.lee93.coc.model.mapper.UserMapper;
+import com.lee93.coc.model.request.LoginRequestDto;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,15 +22,11 @@ public class UserService {
      * @param loginId 회원가입을 시도하는 ID
      * @return 유효성 검사 결과에 따른 응답 ENUM 값
      */
-    public String availableUserId(String loginId) {
-        // TODO loginId에 admin 이 포함되면 막기
-        if (userDao.isAdminId(loginId) > 0) {
-            return ValidationStatus.UNAVAILABLE.name();
+    public boolean availableUserId(String loginId) {
+        if (userDao.isAdminId(loginId) > 0 || userDao.duplicateId(loginId) > 0) {
+            return false;
         }
-        if(userDao.duplicateId(loginId) > 0){
-           return ValidationStatus.DUPLICATE.name();
-        }
-        return ValidationStatus.AVAILABLE.name();
+        return true;
     }
     
     public void signupUser(UserEntity userEntity) {

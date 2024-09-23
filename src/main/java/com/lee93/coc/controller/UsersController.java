@@ -1,17 +1,16 @@
 package com.lee93.coc.controller;
 
-import com.lee93.coc.common.CustomException;
-import com.lee93.coc.common.GlobalExceptionHandler;
+import com.lee93.coc.exception.CustomException;
 import com.lee93.coc.enums.ResponseStatus;
+import com.lee93.coc.exception.ErrorCode;
 import com.lee93.coc.model.entity.UserEntity;
+import com.lee93.coc.model.request.AvailableIdDto;
 import com.lee93.coc.model.request.LoginRequestDto;
 import com.lee93.coc.model.request.SignupRequestDto;
+import com.lee93.coc.model.response.SuccessResponse;
 import com.lee93.coc.service.UserService;
 import com.lee93.coc.security.JwtTokenProvider;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,19 +33,23 @@ public class UsersController {
 
     /**
      * 회원가입을 시도하는 ID가 사용가능한지 검사
-     * @param loginId sign up 요청하는 user 의 id
+     * @param availableIdDto sign up 요청하는 user 의 id
      * @return 검사 결과에 따른 응답값
      */
     // TODO 유효성 검사 실패시 message 안뜸
-    @GetMapping(path = "/auth/available-loginid")
-    public ResponseEntity<String> availableId( @RequestParam
-            @NotBlank( message = "ID를 입력해주세요.")
-            @Size(min = 4, max = 11, message = "ID는 4~11자리만 가능합니다.")
-            @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d-_]{4,11}$", message = "ID는 영문과 숫자의 조합이며, 특수문자는 '-','_'만 가능합니다.")
-            String loginId ) {
-        logger.info(" --- >>> available user id : {}" , loginId);
-        String availableResult = userService.availableUserId(loginId);
-        return ResponseEntity.ok(availableResult);
+    @PostMapping(path = "/auth/available-loginid")
+    public ResponseEntity<SuccessResponse> availableId(@RequestBody AvailableIdDto availableIdDto ) {
+        logger.info(" --- >>> available user id : {}" , availableIdDto.getLoginId());
+        String loginId = availableIdDto.getLoginId();
+        boolean isAvailable = userService.availableUserId(loginId);
+
+        if(!isAvailable){
+            throw new CustomException(ErrorCode.DUPLICATE_ID);
+        }
+        return ResponseEntity.ok(SuccessResponse.builder()
+//                        .success(isAvailable)
+                        .message("사용가능한 아이디입니다.")
+                        .build());
     }
 
     /**
@@ -92,7 +95,7 @@ public class UsersController {
             response.put("message","Login "+ResponseStatus.SUCCESS.getMsg());
            return ResponseEntity.ok(response);
         }else{
-            throw new CustomException(result);
+            throw new CustomException(ErrorCode.DUPLICATE_ID);
         }
     }
 
