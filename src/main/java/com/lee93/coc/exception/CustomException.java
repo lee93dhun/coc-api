@@ -1,6 +1,5 @@
 package com.lee93.coc.exception;
 
-import com.lee93.coc.enums.ResponseStatus;
 import lombok.Getter;
 
 @Getter

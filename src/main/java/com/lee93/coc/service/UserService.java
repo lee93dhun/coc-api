@@ -1,10 +1,9 @@
 package com.lee93.coc.service;
 
 import com.lee93.coc.dao.UserDao;
-import com.lee93.coc.enums.ResponseStatus;
+import com.lee93.coc.exception.CustomException;
+import com.lee93.coc.exception.ErrorCode;
 import com.lee93.coc.model.entity.UserEntity;
-import com.lee93.coc.model.mapper.UserMapper;
-import com.lee93.coc.model.request.LoginRequestDto;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,18 +35,15 @@ public class UserService {
         userDao.signupUser(userEntity);
     }
 
-    public ResponseStatus loginUser(UserEntity userEntity) {
+    public void loginUser(UserEntity userEntity) {
         logger.info("UserService -- loginUser() 실행");
         String encodedPassword ;
         encodedPassword = userDao.idCheckGetPassword(userEntity.getLoginId());
         if (encodedPassword == null) {
-            return ResponseStatus.USER_NOT_FOUND;
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        }else if(!checkPassword(userEntity.getPassword(), encodedPassword)){
+            throw new CustomException(ErrorCode.PASSWORD_MISMATCH);
         }
-        boolean pwCheck = checkPassword(userEntity.getPassword(), encodedPassword);
-        if(!pwCheck){
-            return ResponseStatus.PASSWORD_MISMATCH;
-        }
-        return ResponseStatus.SUCCESS;
     }
     public boolean checkPassword(String requestPw, String encodedPw){
         logger.info(":: Password Check ::");

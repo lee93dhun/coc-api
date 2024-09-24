@@ -1,8 +1,8 @@
 package com.lee93.coc.controller;
 
 import com.lee93.coc.exception.CustomException;
-import com.lee93.coc.enums.ResponseStatus;
 import com.lee93.coc.exception.ErrorCode;
+import com.lee93.coc.modelMappers.UserMapper;
 import com.lee93.coc.model.entity.UserEntity;
 import com.lee93.coc.model.request.AvailableIdDto;
 import com.lee93.coc.model.request.LoginRequestDto;
@@ -77,28 +77,20 @@ public class UsersController {
     }
 
     @PostMapping(path = "/user/login")
-    public ResponseEntity<Map> login(@RequestBody LoginRequestDto loginRequestDto){
+    public ResponseEntity<SuccessResponse> login(@RequestBody LoginRequestDto loginRequestDto){
         logger.info(" --- >>> Login request received : {}", loginRequestDto);
 
-        UserEntity userEntity = UserEntity.builder()
-                .loginId(loginRequestDto.getLoginId())
-                .password(loginRequestDto.getPassword())
-                .build();
+        UserEntity userEntity = UserMapper.INSTANCE.loginRequestToUserEntity(loginRequestDto);
+
+        userService.loginUser(userEntity);
 
         String loginId = userEntity.getLoginId();
-        ResponseStatus result = userService.loginUser(userEntity);
+        String token = jwtTokenProvider.generateToken(loginId);
 
-        if(result.equals(ResponseStatus.SUCCESS)){
-            String token = jwtTokenProvider.generateToken(loginId);
-            Map<String, String> response = new HashMap<>();
-            response.put("token", token);
-            response.put("message","Login "+ResponseStatus.SUCCESS.getMsg());
-           return ResponseEntity.ok(response);
-        }else{
-            throw new CustomException(ErrorCode.DUPLICATE_ID);
-        }
+        return ResponseEntity.ok(SuccessResponse.builder()
+                        .data(token)
+                        .message("LOGIN SUCCESS")
+                        .build());
     }
-
-
 
 }
