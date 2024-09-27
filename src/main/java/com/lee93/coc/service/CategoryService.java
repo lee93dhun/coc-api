@@ -16,8 +16,8 @@ public class CategoryService {
     final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final CategoryDao categoryDao;
 
-    public List<CategoryEntity> getCategories(String postsType) {
+    public List<CategoryEntity> getCategoryList(String postsType) {
         logger.info("CategoryService -- getCategories() 실행");
-        return categoryDao.getCategories(postsType);
+        return categoryDao.getCategoryList(postsType);
     }
 }

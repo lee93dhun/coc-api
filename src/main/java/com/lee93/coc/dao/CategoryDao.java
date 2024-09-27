@@ -8,5 +8,5 @@ import java.util.List;
 
 @Mapper
 public interface CategoryDao {
-    List<CategoryEntity> getCategories(String postsType);
+    List<CategoryEntity> getCategoryList(String postsType);
 }

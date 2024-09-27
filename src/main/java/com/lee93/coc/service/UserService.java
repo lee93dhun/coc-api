@@ -27,7 +27,7 @@ public class UserService {
             throw new CustomException(ErrorCode.REQUIRED_FIELD_EMPTY);
         }else if((loginId.length() < 4 || loginId.length() > 12)){
             throw new CustomException(ErrorCode.INVALID_FIELD_LENGTH);
-        }else if(!Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d-_]{4,11}$", loginId)){
+        }else if(!Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d-_]$", loginId)){
             throw new CustomException(ErrorCode.INVALID_FIELD_PATTERN);
         }else if (userDao.isAdminId(loginId) > 0 || userDao.duplicateId(loginId) > 0) {
             throw new CustomException(ErrorCode.DUPLICATE_ID);

@@ -26,25 +26,7 @@ public class PostsController {
     private final CategoryService categoryService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @GetMapping(path="/bbs/categories")
-    public ResponseEntity<List<CategoryResponseDto>> getCategories( String postsType){
-        logger.info(" --- >>> Get Category Request :: {}", postsType);
 
-        List<CategoryEntity> categoryEntityList = categoryService.getCategories(postsType);
-        List<CategoryResponseDto> categoryResponseDtoList = categoryEntityList.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(categoryResponseDtoList);
-    }
-
-    private CategoryResponseDto convertToDto(CategoryEntity categoryEntity) {
-        return CategoryResponseDto.builder()
-                .categoryId(categoryEntity.getCategoryId())
-                .categoryName(categoryEntity.getCategoryName())
-                .postsType(categoryEntity.getPostsType())
-                .build();
-    }
 
     @PostMapping(path = "/bbs/post")
     public ResponseEntity<String> resisterPost(

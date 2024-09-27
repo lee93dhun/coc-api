@@ -2,6 +2,7 @@ package com.lee93.coc.modelMappers;
 
 import com.lee93.coc.model.entity.UserEntity;
 import com.lee93.coc.model.request.LoginRequestDto;
+import com.lee93.coc.model.request.SignupRequestDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -13,4 +14,6 @@ public interface UserMapper {
     @Mapping(target = "userId", ignore = true)
     @Mapping(target = "userName", ignore = true)
     UserEntity loginRequestToUserEntity(LoginRequestDto loginRequestDto);
+
+    UserEntity signupRequestToUserEntity(SignupRequestDto signupRequestDto);
 }

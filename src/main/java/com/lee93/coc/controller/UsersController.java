@@ -12,6 +12,7 @@ import com.lee93.coc.service.UserService;
 import com.lee93.coc.security.JwtTokenProvider;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.apache.catalina.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -56,11 +57,9 @@ public class UsersController {
     @PostMapping(path = "/user/signup")
     public ResponseEntity<SuccessResponse> signup( @RequestBody SignupRequestDto signupRequestDto ) {
         logger.info(" --- >>> Signup request received : {}", signupRequestDto.toString());
-        UserEntity userEntity = UserEntity.builder()
-                .loginId(signupRequestDto.getLoginId())
-                .password(signupRequestDto.getPassword())
-                .userName(signupRequestDto.getUserName())
-                .build();
+
+        UserEntity userEntity = UserMapper.INSTANCE.signupRequestToUserEntity(signupRequestDto);
+
         userService.availableUserId(userEntity.getLoginId());
         userService.validateSignupData(userEntity);
         userService.signupUser(userEntity);
@@ -88,7 +87,7 @@ public class UsersController {
 
         return ResponseEntity.ok(SuccessResponse.builder()
                         .data(token)
-                        .message("LOGIN SUCCESS")
+                        .message(":: LOGIN SUCCESS ::")
                         .build());
     }
 

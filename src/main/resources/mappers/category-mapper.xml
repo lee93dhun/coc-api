@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.lee93.coc.dao.CategoryDao">
-   <select id="getCategories" parameterType="String" resultType="categoryEntity">
+   <select id="getCategoryList" parameterType="String" resultType="categoryEntity">
         SELECT * FROM categories WHERE posts_type = #{postsType}
    </select>
 </mapper>
