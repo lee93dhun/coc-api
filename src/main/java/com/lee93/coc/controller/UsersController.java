@@ -34,20 +34,16 @@ public class UsersController {
     /**
      * 회원가입을 시도하는 ID가 사용가능한지 검사
      * @param availableIdDto sign up 요청하는 user 의 id
-     * @return 검사 결과에 따른 응답값
+     * @return 사용가능한 id 일때 응답
      */
     // TODO 유효성 검사 실패시 message 안뜸
     @PostMapping(path = "/auth/available-loginid")
     public ResponseEntity<SuccessResponse> availableId(@RequestBody AvailableIdDto availableIdDto ) {
         logger.info(" --- >>> available user id : {}" , availableIdDto.getLoginId());
         String loginId = availableIdDto.getLoginId();
-        boolean isAvailable = userService.availableUserId(loginId);
+        userService.availableUserId(loginId);
 
-        if(!isAvailable){
-            throw new CustomException(ErrorCode.DUPLICATE_ID);
-        }
         return ResponseEntity.ok(SuccessResponse.builder()
-//                        .success(isAvailable)
                         .message("사용가능한 아이디입니다.")
                         .build());
     }
@@ -55,27 +51,30 @@ public class UsersController {
     /**
      * 회원가입
      * @param signupRequestDto 회원가입에 필요한 User data
-     * @return
+     * @return 회원가입에 성공했을때의 응답
      */
     @PostMapping(path = "/user/signup")
-    public ResponseEntity<String> signup(
-            @Valid
-            @RequestBody SignupRequestDto signupRequestDto ) {
+    public ResponseEntity<SuccessResponse> signup( @RequestBody SignupRequestDto signupRequestDto ) {
         logger.info(" --- >>> Signup request received : {}", signupRequestDto.toString());
-        // TODO api url 에 직접 접근시 return 고민
-        if(!signupRequestDto.isAvailableSignup()) {
-            return new ResponseEntity<>("잘못된 요청", HttpStatus.BAD_REQUEST);
-        }
         UserEntity userEntity = UserEntity.builder()
                 .loginId(signupRequestDto.getLoginId())
                 .password(signupRequestDto.getPassword())
                 .userName(signupRequestDto.getUserName())
                 .build();
+        userService.availableUserId(userEntity.getLoginId());
+        userService.validateSignupData(userEntity);
         userService.signupUser(userEntity);
 
-        return ResponseEntity.ok("SUCCESS");
+        return ResponseEntity.ok(SuccessResponse.builder()
+                        .message("회원가입이 완료되었습니다.")
+                        .build());
     }
 
+    /**
+     * 로그인
+     * @param loginRequestDto 로그인에 필요한 데이터
+     * @return 로그인에 성공했을때의 응답
+     */
     @PostMapping(path = "/user/login")
     public ResponseEntity<SuccessResponse> login(@RequestBody LoginRequestDto loginRequestDto){
         logger.info(" --- >>> Login request received : {}", loginRequestDto);
