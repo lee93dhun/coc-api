@@ -39,7 +39,7 @@ public class UsersController {
      */
     // TODO 유효성 검사 실패시 message 안뜸
     @PostMapping(path = "/auth/available-loginid")
-    public ResponseEntity<SuccessResponse> availableId(@RequestBody AvailableIdDto availableIdDto ) {
+    public ResponseEntity<SuccessResponse> availableId(@Valid @RequestBody AvailableIdDto availableIdDto ) {
         logger.info(" --- >>> available user id : {}" , availableIdDto.getLoginId());
         String loginId = availableIdDto.getLoginId();
         userService.availableUserId(loginId);
@@ -75,7 +75,7 @@ public class UsersController {
      * @return 로그인에 성공했을때의 응답
      */
     @PostMapping(path = "/user/login")
-    public ResponseEntity<SuccessResponse> login(@RequestBody LoginRequestDto loginRequestDto){
+    public ResponseEntity<SuccessResponse> login(@Valid @RequestBody LoginRequestDto loginRequestDto){
         logger.info(" --- >>> Login request received : {}", loginRequestDto);
 
         UserEntity userEntity = UserMapper.INSTANCE.loginRequestToUserEntity(loginRequestDto);

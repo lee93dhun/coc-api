@@ -3,6 +3,8 @@ package com.lee93.coc.service;
 import com.lee93.coc.dao.UserDao;
 import com.lee93.coc.exception.CustomException;
 import com.lee93.coc.exception.ErrorCode;
+import com.lee93.coc.exception.PasswordMismatchException;
+import com.lee93.coc.exception.notFound.LoginIdCustomNotFoundException;
 import com.lee93.coc.model.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -23,13 +25,7 @@ public class UserService {
      * @param loginId 회원가입을 시도하는 ID
      */
     public void availableUserId(String loginId) {
-        if(loginId.isEmpty()) {
-            throw new CustomException(ErrorCode.REQUIRED_FIELD_EMPTY);
-        }else if((loginId.length() < 4 || loginId.length() > 12)){
-            throw new CustomException(ErrorCode.INVALID_FIELD_LENGTH);
-        }else if(!Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d-_]$", loginId)){
-            throw new CustomException(ErrorCode.INVALID_FIELD_PATTERN);
-        }else if (userDao.isAdminId(loginId) > 0 || userDao.duplicateId(loginId) > 0) {
+         if (userDao.isAdminId(loginId) > 0 || userDao.duplicateId(loginId) > 0) {
             throw new CustomException(ErrorCode.DUPLICATE_ID);
         }
     }
@@ -54,11 +50,15 @@ public class UserService {
     public void loginUser(UserEntity userEntity) {
         logger.info("UserService -- loginUser() 실행");
         String encodedPassword ;
-        encodedPassword = userDao.idCheckGetPassword(userEntity.getLoginId());
+        String loginId = userEntity.getLoginId();
+        String requestPassword = userEntity.getPassword();
+
+        encodedPassword = userDao.idCheckGetPassword(loginId);
+
         if (encodedPassword == null) {
-            throw new CustomException(ErrorCode.USER_NOT_FOUND);
-        }else if(!checkPassword(userEntity.getPassword(), encodedPassword)){
-            throw new CustomException(ErrorCode.PASSWORD_MISMATCH);
+            throw new LoginIdCustomNotFoundException(loginId);
+        }else if(!checkPassword(requestPassword, encodedPassword)){
+            throw new PasswordMismatchException(requestPassword);
         }
     }
 
