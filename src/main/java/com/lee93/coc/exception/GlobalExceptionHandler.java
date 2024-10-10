@@ -1,6 +1,7 @@
 package com.lee93.coc.exception;
 
-import com.lee93.coc.exception.notFound.CustomNotFoundException;
+import com.lee93.coc.exception.duplicate.DuplicateException;
+import com.lee93.coc.exception.notFound.ResourceNotFoundException;
 import com.lee93.coc.model.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +24,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.valueOf(status));
     }
 
-    @ExceptionHandler(CustomNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleCustomNotFoundException(final CustomNotFoundException e) {
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleResourceNotFoundException(final ResourceNotFoundException e) {
         final int status = HttpStatus.NOT_FOUND.value();
         final ErrorCode errorCode = e.getErrorCode();
         final String value = e.getValue();
@@ -39,6 +40,17 @@ public class GlobalExceptionHandler {
         final int status = HttpStatus.UNAUTHORIZED.value();
         final ErrorCode errorCode = e.getErrorCode();
         final String value = e.getPassword();
+
+        final ErrorResponse errorResponse = ErrorResponse.of(status, errorCode, value);
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.valueOf(status));
+    }
+
+    @ExceptionHandler(DuplicateException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateException(final DuplicateException e) {
+        final int status = HttpStatus.CONFLICT.value();
+        final ErrorCode errorCode = e.getErrorCode();
+        final String value = e.getValue();
 
         final ErrorResponse errorResponse = ErrorResponse.of(status, errorCode, value);
 

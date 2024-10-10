@@ -4,7 +4,8 @@ import com.lee93.coc.dao.UserDao;
 import com.lee93.coc.exception.CustomException;
 import com.lee93.coc.exception.ErrorCode;
 import com.lee93.coc.exception.PasswordMismatchException;
-import com.lee93.coc.exception.notFound.LoginIdCustomNotFoundException;
+import com.lee93.coc.exception.duplicate.LoginIdDuplicateException;
+import com.lee93.coc.exception.notFound.LoginIdNotFoundException;
 import com.lee93.coc.model.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -26,7 +27,7 @@ public class UserService {
      */
     public void availableUserId(String loginId) {
          if (userDao.isAdminId(loginId) > 0 || userDao.duplicateId(loginId) > 0) {
-            throw new CustomException(ErrorCode.DUPLICATE_ID);
+            throw new LoginIdDuplicateException(loginId);
         }
     }
 
@@ -56,7 +57,7 @@ public class UserService {
         encodedPassword = userDao.idCheckGetPassword(loginId);
 
         if (encodedPassword == null) {
-            throw new LoginIdCustomNotFoundException(loginId);
+            throw new LoginIdNotFoundException(loginId);
         }else if(!checkPassword(requestPassword, encodedPassword)){
             throw new PasswordMismatchException(requestPassword);
         }
