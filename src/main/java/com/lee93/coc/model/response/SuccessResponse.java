@@ -11,6 +11,7 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 public class SuccessResponse<T> {
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private T data;
 //    @JsonInclude(JsonInclude.Include.NON_NULL)

@@ -2,6 +2,7 @@ package com.lee93.coc.service;
 
 import com.lee93.coc.dao.CategoryDao;
 import com.lee93.coc.enums.PostsType;
+import com.lee93.coc.exception.notFound.CategoryNotFoundException;
 import com.lee93.coc.model.entity.CategoryEntity;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -18,6 +19,10 @@ public class CategoryService {
 
     public List<CategoryEntity> getCategoryList(String postsType) {
         logger.info("CategoryService -- getCategories() 실행");
-        return categoryDao.getCategoryList(postsType);
+        List<CategoryEntity> categoryEntityList =  categoryDao.getCategoryList(postsType);
+        if(categoryEntityList == null || categoryEntityList.isEmpty()) {
+            throw new CategoryNotFoundException(postsType);
+        }
+        return categoryEntityList;
     }
 }

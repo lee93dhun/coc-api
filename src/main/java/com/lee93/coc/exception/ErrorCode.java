@@ -6,19 +6,26 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
-    // Common
-    INVALID_INPUT_VALUE("C-001","Invalid Input Value"),
-    RESOURCE_NOT_FOUND("C-002","Not Found"),
+    // TODO 코드분류 재설정 하기
 
-    REQUIRED_FIELD_EMPTY("","필수 입력값이 비어있습니다."),
-    INVALID_FIELD_LENGTH("", "필드의 길이가 유효하지않은 값이 있습니다."),
-    INVALID_FIELD_PATTERN("","유효하지 않은 입력값이 있습니다." ),
+    // Common
+    INVALID_INPUT_VALUE("CM-001","Invalid input value"),
+    RESOURCE_NOT_FOUND("CM-002","Not found"),
+    UNEXPECTED_ERROR("CM-003", "Unexpected error"),
+
+    // User
+    DUPLICATE_ID("US-001","Duplicate ID"),
+    SIGNUP_UNEXPECTED_ERROR("US-002", "Unexpected error during user registration"),
 
     // Authentication
-    LOGIN_ID_NOT_FOUND("A-001","Login Id Not Found"),
-    PASSWORD_MISMATCH("A-002","Password Mismatch"),
-    // Duplicate
-    DUPLICATE_ID("D-001","Duplicate ID");
+    LOGIN_ID_NOT_FOUND("AT-001","Login id not found"),
+    PASSWORD_MISMATCH("AT-002","Password mismatch"),
+
+    // Category
+    CATEGORY_NOT_FOUND("CT-001", "Category not found"),
+
+    ;
+
 
     private final String code;
     private final String message;

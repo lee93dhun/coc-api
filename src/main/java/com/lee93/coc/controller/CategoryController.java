@@ -28,10 +28,12 @@ public class CategoryController {
         logger.info(" --- >>> Get Category Request :: {}", categoryRequestDto);
 
         List<CategoryEntity> categoryEntityList = categoryService.getCategoryList(categoryRequestDto.getPostsType());
+
         List<CategoryResponseDto> categoryResponseDtoList = CategoryMapper.INSTANCE.categoryEntitiesToCategoryDtos(categoryEntityList);
+
         return ResponseEntity.ok(SuccessResponse.builder()
                         .data(categoryResponseDtoList)
-                        .message(categoryRequestDto.getPostsType()+" : 카테고리 List 불러오기 성공")
+                        .message(categoryRequestDto.getPostsType()+" : Get Category List Successful")
                         .build());
     }
 
