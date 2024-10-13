@@ -8,6 +8,7 @@ import com.lee93.coc.model.response.CategoryResponseDto;
 import com.lee93.coc.security.JwtTokenProvider;
 import com.lee93.coc.service.CategoryService;
 import com.lee93.coc.service.PostsService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

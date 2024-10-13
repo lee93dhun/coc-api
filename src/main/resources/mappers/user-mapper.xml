@@ -12,7 +12,7 @@
     </select>
     <insert id="signupUser" parameterType="userEntity">
         INSERT INTO users (login_id, password, user_name)
-        VALUES (#{loginId1}, #{password}, #{userName})
+        VALUES (#{loginId}, #{password}, #{userName})
     </insert>
 
     <select id="idCheckGetPassword" parameterType="String" resultType="String">

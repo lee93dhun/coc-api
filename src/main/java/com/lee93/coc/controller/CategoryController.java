@@ -6,7 +6,7 @@ import com.lee93.coc.model.response.CategoryResponseDto;
 import com.lee93.coc.model.response.SuccessResponse;
 import com.lee93.coc.modelMappers.CategoryMapper;
 import com.lee93.coc.service.CategoryService;
-import com.lee93.coc.service.PostsService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
@@ -24,7 +23,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping(path="/categoryList")
-    public ResponseEntity<SuccessResponse> getCategoryList(@RequestBody CategoryRequestDto categoryRequestDto){
+    public ResponseEntity<SuccessResponse> getCategoryList( @Valid @RequestBody CategoryRequestDto categoryRequestDto){
         logger.info(" --- >>> Get Category Request :: {}", categoryRequestDto);
 
         List<CategoryEntity> categoryEntityList = categoryService.getCategoryList(categoryRequestDto.getPostsType());
