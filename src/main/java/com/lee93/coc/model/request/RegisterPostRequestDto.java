@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 @Setter
 public class RegisterPostRequestDto {
     private int categoryId;
-    private String accountId;
     private String postTitle;
     private String postContent;
 }

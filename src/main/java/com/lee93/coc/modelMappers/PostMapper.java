@@ -1,8 +1,11 @@
 package com.lee93.coc.modelMappers;
 
 import com.lee93.coc.model.entity.CategoryEntity;
+import com.lee93.coc.model.entity.PostEntity;
+import com.lee93.coc.model.request.RegisterPostRequestDto;
 import com.lee93.coc.model.response.CategoryResponseDto;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
@@ -11,6 +14,5 @@ import java.util.List;
 public interface PostMapper {
     PostMapper INSTANCE = Mappers.getMapper(PostMapper.class);
 
-
-    List<CategoryResponseDto> categoryEntitiesToCategoryDtos(List<CategoryEntity> categoryEntityList);
+    PostEntity registerPostRequestDtoToPostEntity(RegisterPostRequestDto registerPostRequestDto);
 }

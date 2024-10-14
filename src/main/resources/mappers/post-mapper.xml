@@ -5,7 +5,7 @@
 
 <mapper namespace="com.lee93.coc.dao.PostDao">
     <insert id="registerPost" parameterType="postEntity">
-        INSERT INTO posts (category_id, account_id, post_title, post_content)
-        VALUES (#{categoryId}, #{accountId}, #{postTitle}, #{postContent})
+        INSERT INTO posts (category_id, account_id, post_title, post_content, posts_type)
+        VALUES (#{categoryId}, #{accountId}, #{postTitle}, #{postContent}, #{postsType})
     </insert>
 </mapper>
