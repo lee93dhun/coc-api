@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.UUID;
 
 @Service
@@ -69,45 +70,28 @@ public class FileService {
         }
     }
 
-    public void validateFileForFree(MultipartFile[] files) {
-        int limitFileSizeInKb = 1024*5;
-        if(files.length < 1 || files.length > 5){
-            logger.info("업로드 요청한 파일 개수(free) :: ",files.length);
-            // TODO 업로드 파일의 개수가 1~5가 아니면 예외 던지기
+    public void validateFiles(PostsType type, MultipartFile[] files) {
+
+        if(files.length > type.getLimitFileCnt()){
+            // TODO 업로드 파일의 개수 체크 후 예외 던지기
         }
-        for(MultipartFile file : files){
+        for(MultipartFile file : files) {
             String originalName = file.getOriginalFilename();
-            String fileExtension = originalName.substring(originalName.lastIndexOf(".")+1);
-            int fileSizeInKb = (int)file.getSize() / 1024;
-            if(!fileExtension.equals("jpg") && !fileExtension.equals("gif")
-                    && !fileExtension.equals("png") && !fileExtension.equals("zip")){
-                logger.error("업로드 할 수 없는 확장자 :: ",fileExtension);
-                // TODO 확장자 불일치 예외 던지기
-            }else if(fileSizeInKb > limitFileSizeInKb){
+            String fileExtension = originalName.substring(originalName.lastIndexOf(".") + 1);
+            int fileSizeInKb = (int) file.getSize() / 1024;
+
+            if (fileSizeInKb > type.getLimitFileSizeInKb()) {
                 logger.error("파일 사이즈 초과 :: ", fileSizeInKb);
                 // TODO 파일 사이즈 제한 예외 던지기
+            }else if(!Arrays.asList(type.getExtensions()).contains(fileExtension)){
+                logger.error("업로드 불가능한 확장자");
+                // TODO 업로드 불가능 확장자 예외 던지기
+            }else if(file.isEmpty()){
+                // TODO 파일이 비어있을 경우 예외 던지기
             }
         }
     }
 
-    public void validateFileForGallery(MultipartFile[] files) {
-        int limitFileSizeInKb = 1024*3;
-        if(files.length < 1 || files.length > 20){
-            logger.info("업로드 요청한 파일 개수(gallery) :: ",files.length);
-            // TODO 업로드 파일의 개수가 1~20가 아니면 예외 던지기
-        }
-        for(MultipartFile file : files){
-            String originalName = file.getOriginalFilename();
-            String fileExtension = originalName.substring(originalName.lastIndexOf(".")+1);
-            int fileSizeInKb = (int)file.getSize() / 1024;
-            if(!fileExtension.equals("jpg") && !fileExtension.equals("gif")
-                    && !fileExtension.equals("png")){
-                logger.error("업로드 할 수 없는 확장자 :: ",fileExtension);
-                // TODO 확장자 불일치 예외 던지기
-            }else if(fileSizeInKb > limitFileSizeInKb){
-                logger.error("파일 사이즈 초과 :: ", fileSizeInKb);
-                // TODO 파일 사이즈 제한 예외 던지기
-            }
-        }
-    }
+
+
 }
