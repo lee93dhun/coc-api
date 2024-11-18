@@ -21,7 +21,7 @@ public class PostsController {
     private final PostsService postsService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @PostMapping(path = "/bbs/post/{postsType}")
+    @PostMapping(path = "/{postsType}/post")
     public ResponseEntity<SuccessResponse> resisterPost(
             @RequestHeader("Authorization") String authorizationHeader,
             @ModelAttribute RegisterPostRequestDto registerPostRequestDto,
@@ -35,7 +35,7 @@ public class PostsController {
         // TODO PostsType 변환실패시 예외처리
         PostEntity postEntity = PostMapper.INSTANCE.registerPostRequestDtoToPostEntity(registerPostRequestDto);
         postEntity.setAccountId(loginId);
-        postEntity.setPostsType(PostsType.valueOf(postsType.toUpperCase()+"_BOARD"));
+        postEntity.setPostsType(PostsType.valueOf(postsType.toUpperCase()));
 
         postsService.registerPost(postEntity);
 

@@ -13,7 +13,7 @@ public enum ErrorCode {
     RESOURCE_NOT_FOUND("CM-002","Not found"),
     UNEXPECTED_ERROR("CM-003", "Unexpected error"),
 
-    // User
+    // User 
     DUPLICATE_ID("US-001","Duplicate ID"),
     SIGNUP_UNEXPECTED_ERROR("US-002", "Unexpected error during user registration"),
 
