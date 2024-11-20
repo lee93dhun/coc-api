@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "api")
 @AllArgsConstructor
@@ -33,10 +35,9 @@ public class FileController {
             type = PostsType.GALLERY;
         }
 
-        fileService.validateFiles(type,files);
-        for(MultipartFile file : files){
-            fileService.saveFile(postId, file, type);
-        }
+        fileService.validateFilesByType(type,files);
+        fileService.saveFile(postId, files, type);
+
         return ResponseEntity.ok(SuccessResponse.builder()
                 .message("Files Upload Successful")
                 .build());

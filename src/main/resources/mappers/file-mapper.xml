@@ -8,4 +8,9 @@
         INSERT INTO files (post_id, original_name, save_name, file_path, file_size)
         VALUES (#{postId}, #{originalName}, #{saveName}, #{filePath}, #{fileSize})
     </insert>
+
+    <insert id="saveThumbnail" parameterType="thumbnailEntity">
+        INSERT INTO thumbnail(post_id, thumbnail_save_name, thumbnail_path, thumbnail_size)
+        VALUES (#{postId}, #{thumbnailSaveName}, #{thumbnailPath}, #{thumbnailSize})
+    </insert>
 </mapper>

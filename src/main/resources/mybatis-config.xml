@@ -10,6 +10,7 @@
         <typeAlias alias="postEntity" type="com.lee93.coc.model.entity.PostEntity"/>
         <typeAlias alias="categoryEntity" type="com.lee93.coc.model.entity.CategoryEntity"/>
         <typeAlias alias="fileEntity" type="com.lee93.coc.model.entity.FileEntity"/>
+        <typeAlias alias="thumbnailEntity" type="com.lee93.coc.model.entity.ThumbnailEntity"/>
     </typeAliases>
 
 </configuration>
