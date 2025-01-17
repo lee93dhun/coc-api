@@ -13,4 +13,8 @@
         INSERT INTO thumbnail(post_id, thumbnail_save_name, thumbnail_path, thumbnail_size)
         VALUES (#{postId}, #{thumbnailSaveName}, #{thumbnailPath}, #{thumbnailSize})
     </insert>
+
+    <select id="getFileById" parameterType="int" resultType="fileEntity">
+        SELECT * FROM files WHERE file_id = #{fileId}
+    </select>
 </mapper>

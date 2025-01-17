@@ -22,6 +22,11 @@ public class CategoryController {
     final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final CategoryService categoryService;
 
+    /**
+     * 게시판 타입에 해당하는 카테고리 리스트를 불러오는 요청
+     * @param categoryRequestDto 게시판 타입을 포함한 Dto 객체
+     * @return 게시판 타입에 따른 카테고리 리스트 데이터를 포함한 성공 응답 객체
+     */
     @GetMapping(path="/categoryList")
     public ResponseEntity<SuccessResponse> getCategoryList( @Valid @RequestBody CategoryRequestDto categoryRequestDto){
         logger.info(" --- >>> Get Category Request :: {}", categoryRequestDto);

@@ -17,6 +17,11 @@ public class CategoryService {
     final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final CategoryDao categoryDao;
 
+    /**
+     * 게시판 타입에 해당하는 카테고리를 불러오는 기능
+     * @param postsType 게시판 타입
+     * @return 게시판 타입에 해당하는 카테고리 리스트 객체
+     */
     public List<CategoryEntity> getCategoryList(String postsType) {
         logger.info("CategoryService -- getCategories() 실행");
         List<CategoryEntity> categoryEntityList =  categoryDao.getCategoryList(postsType);

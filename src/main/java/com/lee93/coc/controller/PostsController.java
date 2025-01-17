@@ -21,6 +21,13 @@ public class PostsController {
     private final PostsService postsService;
     private final JwtTokenProvider jwtTokenProvider;
 
+    /**
+     * 게시물 등록 요청
+     * @param authorizationHeader 로그인 인증 토큰
+     * @param registerPostRequestDto 등록할 게시물의 데이터들을 포함한 객체
+     * @param postsType 등록할 게시물의 게시판 타입
+     * @return 게시물 등록 성공 응답 객체
+     */
     @PostMapping(path = "/{postsType}/post")
     public ResponseEntity<SuccessResponse> resisterPost(
             @RequestHeader("Authorization") String authorizationHeader,
@@ -32,9 +39,11 @@ public class PostsController {
         String token = authorizationHeader.replace("Bearer","");
         String loginId = jwtTokenProvider.extractUserId(token);
 
-        // TODO PostsType 변환실패시 예외처리
+        // TODO 게시물 등록 데티어 유효성검사
+
         PostEntity postEntity = PostMapper.INSTANCE.registerPostRequestDtoToPostEntity(registerPostRequestDto);
         postEntity.setAccountId(loginId);
+        // TODO postsType 을 Dto 객체에 포함시키기 ?
         postEntity.setPostsType(PostsType.valueOf(postsType.toUpperCase()));
 
         postsService.registerPost(postEntity);

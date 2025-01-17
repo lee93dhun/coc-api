@@ -4,10 +4,12 @@ import com.lee93.coc.dao.FileDao;
 import com.lee93.coc.enums.PostsType;
 import com.lee93.coc.model.entity.FileEntity;
 import com.lee93.coc.model.entity.ThumbnailEntity;
-import com.lee93.coc.modelMappers.FileMapper;
 import lombok.AllArgsConstructor;
+import net.coobird.thumbnailator.Thumbnails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,8 +17,8 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.Buffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -29,8 +31,12 @@ public class FileService {
     final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final FileDao fileDao;
 
+    /**
+     * 게시판 타입에 따라 업로드할 파일들의 유효성 검사 기능
+     * @param type 게시판 타입
+     * @param files 유효성 검사를 진행할 파일 집합
+     */
     public void validateFilesByType(PostsType type, MultipartFile[] files) {
-
         if(files.length > type.getLimitFileCnt()){
             // TODO 업로드 파일의 개수 체크 후 예외 던지기
         }
@@ -46,11 +52,17 @@ public class FileService {
                 logger.error("업로드 불가능한 확장자");
                 // TODO 업로드 불가능 확장자 예외 던지기
             }else if(file.isEmpty()){
-                // TODO 파일이 비어있을 경우 예외 던지기
+                // TODO 파일이 비어있을 경우 예외
             }
         }
     }
 
+    /**
+     * 업로드 할 파일의 로컬 및 DB에 저장하는 기능
+     * @param postId 업로드할 파일들의 게시물 ID
+     * @param files 업로드 할 파일 집합
+     * @param type 업로드할 파일들의 게시판 타입
+     */
     public void saveFile(int postId, MultipartFile[] files, PostsType type ) {
         String projectDir = System.getProperty("user.dir");
         String postsTypeToLowerCase = type.name().toLowerCase();
@@ -85,6 +97,11 @@ public class FileService {
         }
     }
 
+    /**
+     * 섬네일 파일을 생성하고 저장하는 기능
+     * @param postId 저장할 섬네일 파일의 게시물 ID
+     * @param file 저장할 섬네일 파일
+     */
     private void saveThumbnail(int postId, MultipartFile file) {
         String projectDir = System.getProperty("user.dir");
         String sp = File.separator;
@@ -92,59 +109,74 @@ public class FileService {
 
         existDirAndCreate(uploadDirForThumb);
 
-        String originalName = file.getOriginalFilename();
-        String fileExtension = originalName.substring(originalName.lastIndexOf(".")+1);
-        String newName = System.currentTimeMillis()+"_"+UUID.randomUUID()+"_thumbnail"+"."+fileExtension;
-        int fileSizeInKb = (int)file.getSize() / 1024;
+        String newName = System.currentTimeMillis()+"_"+UUID.randomUUID()+"_thumbnail.jpg";
 
-        File thumbnailImg = resizeForThumbnail(file);
-
-        // 썸네일 로컬에 저장
+        Path uploadPath = Paths.get(uploadDirForThumb, newName);
         try {
-            Path uploadPath = Paths.get(uploadDirForThumb, newName);
-            Files.write(uploadPath, file.getBytes());
-            // TODO 대용량 파일일 경우에는 Stream 기반으로 하는것이 좋음
+            BufferedImage thumbnailImg = resizeForThumbnail(file);
+            ImageIO.write(thumbnailImg, "jpg", uploadPath.toFile());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        // 썸네일 DB에 저장
+        int savedImgFileSizeInKb = (int) uploadPath.toFile().length() / 1024;
+
         ThumbnailEntity thumbnailEntity = ThumbnailEntity.builder()
                 .postId(postId)
                 .thumbnailSaveName(newName)
                 .thumbnailPath(uploadDirForThumb+newName)
-                .thumbnailSize(fileSizeInKb)
+                .thumbnailSize(savedImgFileSizeInKb)
                 .build();
         fileDao.saveThumbnail(thumbnailEntity);
     }
 
-    private File resizeForThumbnail(MultipartFile file) throws IOException {
-        // 이미지 가져오기
-        BufferedImage originalImg = ImageIO.read(new ByteArrayInputStream(file.getBytes()));
-        
-        // 이미지 해상도 가져오기
-        // 해상도 조절
-        return null;
+    /**
+     * 섬네일 파일 규격에 맞게 해상도 조절 및 이미지 크롭
+     * @param file 해상도 조절 및 크롭할 이미지 파일
+     * @return 규격에 맞게 생성된 이미지 파일
+     * @throws IOException 이미지 생성중 발생하는 예외
+     */
+    public BufferedImage resizeForThumbnail(MultipartFile file) throws IOException {
+        int width = 400;
+        int height = 300;
+        BufferedImage inputImg = ImageIO.read(new ByteArrayInputStream(file.getBytes()));
+
+        return Thumbnails.of(inputImg)
+                .size(width, height)
+                .crop(net.coobird.thumbnailator.geometry.Positions.CENTER)
+                .asBufferedImage();
     }
 
-
+    /**
+     * 로컬에 파일 저장시 파일이 저장될 폴더 확인 및 생성
+      * @param uploadDir 폴더가 존재하는지 확인할 경로
+     */
     private void existDirAndCreate(String uploadDir) {
         Path uploadPath = Paths.get(uploadDir);
         if(!Files.exists(uploadPath)){
             try {
                 Files.createDirectories(uploadPath);
-                logger.info("Create directory : ", uploadDir);
             } catch (IOException e) {
-                logger.info("Failed to create directory", uploadDir);
                 // TODO directory 생성 실패 예외 던지기
                 throw new RuntimeException(e);
             }
         }else{
+            // TODO 경로에 폴더가 이미 존재할때 처리 방향? boolean 반환?
             logger.info("Directory already exists", uploadDir);
         }
     }
 
 
-
-
-
+    public Resource getFileByFileId(int fileId) {
+        FileEntity fileEntity = fileDao.getFileById(fileId);
+        File file = new File(fileEntity.getFilePath());
+        Resource resource = new FileSystemResource(file);
+        if(!resource.exists()){
+            try {
+                throw new FileNotFoundException("File not found at path ");
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return resource;
+    }
 }

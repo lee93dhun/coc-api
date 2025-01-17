@@ -13,6 +13,10 @@ public class PostsService {
     final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final PostDao postDao;
 
+    /**
+     * 게시물을 등록하는 기능
+     * @param postEntity 게시물 등록할 데이터들을 포함한 Entity 객체
+     */
     public void registerPost(PostEntity postEntity) {
         logger.info("PostsService -- registerPost() 실행");
         postDao.registerPost(postEntity);

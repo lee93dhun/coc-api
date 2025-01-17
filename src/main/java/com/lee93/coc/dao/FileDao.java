@@ -9,4 +9,6 @@ public interface FileDao {
     void saveFile(FileEntity fileEntity);
 
     void saveThumbnail(ThumbnailEntity thumbnailEntity);
+
+    FileEntity getFileById(int fileId);
 }

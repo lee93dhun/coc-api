@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class FileEntity {
+    private int fileId;
 
     private int postId;
     private String originalName;
